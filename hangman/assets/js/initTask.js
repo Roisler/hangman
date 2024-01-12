@@ -15,6 +15,7 @@ const initTask = () => {
   const hangmanTitle = document.createElement('h2');
 
   const gameArea = document.createElement('div');
+  const gameLetterList = document.createElement('ul');
   const answer = document.createElement('div');
 
   const question = document.createElement('div');
@@ -44,6 +45,7 @@ const initTask = () => {
 
   gameArea.classList.add('game');
   answer.classList.add('game__answer');
+  gameLetterList.classList.add('game__list');
 
   question.classList.add('game__question');
   questionText.classList.add('game__question_text');
@@ -63,14 +65,30 @@ const initTask = () => {
   /* Append children to parents */
 
   hangmanArea.append(imageHangman, hangmanTitle);
+
+  answer.append(gameLetterList);
+
   question.append(questionText);
   guessesTitle.append(guessesCount);
   guesses.append(guessesTitle);
   gameArea.append(answer, question, guesses, keyboard);
 
   taskContainer.append(hangmanArea, gameArea);
-  console.log(randomize(0, questionList.length - 1));
-  // body.append(taskContainer);
+  const currentQuestionIndex = randomize(0, questionList.length - 1);
+  const currentQuestionBlock = questionList[currentQuestionIndex];
+  const currentQuestion = currentQuestionBlock.question;
+  const currentAnswer = currentQuestionBlock.answer;
+
+  questionText.textContent = `Hint: ${currentQuestion}`;
+
+  currentAnswer.split('')
+    .forEach((el, i) => {
+      const letter = document.createElement('li');
+      letter.classList.add('game__letter', `letter_${i}`);
+      gameLetterList.append(letter);
+    });
+
+  body.append(taskContainer);
 };
 
 export default initTask;
