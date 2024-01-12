@@ -1,5 +1,74 @@
+/* Reset styles */
+body {
+  margin: 0;
+}
+
+ul, li {
+  list-style: none;
+}
+
+/* Styles */
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+
+  background: #7db1fff5;
+}
+
 .container {
+  width: 850px;
   display: flex;
   flex-direction: row;
-  gap: 40px;
+  gap: 100px;
+  border-radius: 30px;
+
+  padding: 20px;
+
+  background: white;
+}
+
+.hangman-area {
+  text-align: center;
+}
+
+.game {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.answer__list {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.answer__letter {
+  width: 30px;
+  border-bottom: 2px solid black;
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 5px;
+
+  justify-content: center;
+}
+
+.keyboard__key {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  background: #7db1fff5;
+  border-radius: 50%;
+  border: none;
+  color: white;
+
+  cursor: pointer;
 }
