@@ -58,11 +58,14 @@ const initTask = () => {
   imageHangman.setAttribute('src', './assets/images/hangman-0.svg');
   hangmanTitle.textContent = taskGameName;
 
+  guessesTitle.textContent = 'Incorrect guesses: ';
+
   /* Append children to parents */
 
   hangmanArea.append(imageHangman, hangmanTitle);
   question.append(questionText);
-
+  guessesTitle.append(guessesCount);
+  guesses.append(guessesTitle);
   gameArea.append(answer, question, guesses, keyboard);
 
   taskContainer.append(hangmanArea, gameArea);
