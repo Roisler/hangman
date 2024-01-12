@@ -1,3 +1,6 @@
+import randomize from './randomize.js';
+import questionList from '../questionList.js';
+
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const taskGameName = 'HANGMAN GAME';
 
@@ -22,7 +25,7 @@ const initTask = () => {
   const guessesCount = document.createElement('span');
 
   const keyboard = document.createElement('div');
-  
+
   alphabet.split('')
     .forEach((el) => {
       const button = document.createElement('button');
@@ -31,7 +34,7 @@ const initTask = () => {
       keyboard.append(button);
     });
 
-/* Add classes to elements */
+  /* Add classes to elements */
   body.classList.add('page');
 
   taskContainer.classList.add('container');
@@ -50,14 +53,12 @@ const initTask = () => {
 
   keyboard.classList.add('game__keyboard');
 
-
-/* Add attributes and values to element */
+  /* Add attributes and values to element */
 
   imageHangman.setAttribute('src', './assets/images/hangman-0.svg');
   hangmanTitle.textContent = taskGameName;
-  
 
-/* Append children to parents */
+  /* Append children to parents */
 
   hangmanArea.append(imageHangman, hangmanTitle);
   question.append(questionText);
@@ -65,8 +66,8 @@ const initTask = () => {
   gameArea.append(answer, question, guesses, keyboard);
 
   taskContainer.append(hangmanArea, gameArea);
-
-  //body.append(taskContainer);
+  console.log(randomize(0, questionList.length - 1));
+  // body.append(taskContainer);
 };
 
 export default initTask;
