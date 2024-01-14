@@ -7,6 +7,7 @@ const taskGameName = 'HANGMAN GAME';
 const state = {
   answer: '',
   question: '',
+  currentText: '',
   incorrectGuesses: 0,
 };
 
@@ -88,11 +89,21 @@ const updateHtml = (list, letter) => {
   }
 
   const gameLetters = document.querySelectorAll('.game__letter');
+  const replaceArr = state.currentText.split('');
 
   list.forEach((index) => {
     gameLetters[index].textContent = letter;
     gameLetters[index].classList.add('letter-open');
+
+    replaceArr[index] = letter.toLowerCase();
   });
+
+  state.currentText = replaceArr.join('');
+  if (state.currentText === state.answer) {
+    setTimeout(() => {
+      alert('You win');
+    }, 100);
+  }
 };
 
 const guessTheLetter = (el) => {
@@ -146,7 +157,7 @@ const initTask = () => {
   const currentQuestionBlock = questionList[currentQuestionIndex];
   state.question = currentQuestionBlock.question;
   state.answer = currentQuestionBlock.answer;
-
+  state.currentText = state.currentText.padStart(state.answer.length, '*');
   questionText.textContent = `Hint: ${state.question}`;
   console.log(state.answer);
 
@@ -159,7 +170,5 @@ const initTask = () => {
 
   body.append(taskContainer);
 };
-
-const isCorrectLetter = (letter, answ) => answ.includes(letter);
 
 export default initTask;
