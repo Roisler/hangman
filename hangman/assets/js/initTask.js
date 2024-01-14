@@ -4,6 +4,23 @@ import questionList from '../questionList.js';
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const taskGameName = 'HANGMAN GAME';
 
+const state = {
+  answer: '',
+  question: '',
+  incorrectGuesses: 0,
+};
+
+const resetState = () => {
+  const keys = Object.keys(state);
+  keys.forEach((key) => {
+    if (typeof state[key] === 'number') {
+      state[key] = 0;
+    } else {
+      state[key] = '';
+    }
+  });
+};
+
 const body = document.querySelector('body');
 
 /* Create elements */
@@ -30,7 +47,10 @@ alphabet.split('')
   .forEach((el) => {
     const button = document.createElement('button');
     button.classList.add('game__keyboard_key');
+    button.id = el;
     button.textContent = el;
+
+    button.addEventListener('click', (e) => guessTheLetter(e));
     keyboard.append(button);
   });
 
@@ -54,12 +74,58 @@ guessesCount.classList.add('game__guesses_count');
 
 keyboard.classList.add('game__keyboard');
 
+const updateHtml = (list, letter) => {
+  guessesCount.textContent = `${state.incorrectGuesses} / 6`;
+  imageHangman.setAttribute('src', `./assets/images/hangman-${state.incorrectGuesses}.svg`);
+
+  const currentButton = document.getElementById(letter);
+  currentButton.disabled = true;
+
+  if (state.incorrectGuesses >= 6) {
+    setTimeout(() => {
+      alert('You lose');
+    }, 100);
+  }
+
+  const gameLetters = document.querySelectorAll('.game__letter');
+
+  list.forEach((index) => {
+    gameLetters[index].textContent = letter;
+    gameLetters[index].classList.add('letter-open');
+  });
+};
+
+const guessTheLetter = (el) => {
+  const currentLetter = el.target.textContent;
+
+  if (state.answer.indexOf(currentLetter.toLowerCase()) === -1) {
+    state.incorrectGuesses += 1;
+  }
+
+  const indexList = [];
+
+  const findIndex = (i) => {
+    const index = state.answer.indexOf(currentLetter.toLowerCase(), i);
+    if (index !== -1) {
+      indexList.push(index);
+      findIndex(index + 1);
+    }
+  };
+
+  findIndex(0);
+
+  console.log(indexList);
+  console.log(state);
+  updateHtml(indexList, currentLetter);
+};
+
 const initTask = () => {
+  resetState();
   /* Add attributes and values to element */
 
-  imageHangman.setAttribute('src', './assets/images/hangman-0.svg');
   hangmanTitle.textContent = taskGameName;
-
+  guessesCount.textContent = '0 / 6';
+  imageHangman.setAttribute('src', './assets/images/hangman-0.svg');
   guessesTitle.textContent = 'Incorrect guesses: ';
 
   /* Append children to parents */
@@ -78,19 +144,22 @@ const initTask = () => {
   /* Get question and render html */
   const currentQuestionIndex = randomize(0, questionList.length - 1);
   const currentQuestionBlock = questionList[currentQuestionIndex];
-  const currentQuestion = currentQuestionBlock.question;
-  const currentAnswer = currentQuestionBlock.answer;
+  state.question = currentQuestionBlock.question;
+  state.answer = currentQuestionBlock.answer;
 
-  questionText.textContent = `Hint: ${currentQuestion}`;
+  questionText.textContent = `Hint: ${state.question}`;
+  console.log(state.answer);
 
-  currentAnswer.split('')
-    .forEach((el, i) => {
+  state.answer.split('')
+    .forEach(() => {
       const letter = document.createElement('li');
-      letter.classList.add('game__letter', `letter_${i}`);
+      letter.classList.add('game__letter');
       gameLetterList.append(letter);
     });
 
   body.append(taskContainer);
 };
+
+const isCorrectLetter = (letter, answ) => answ.includes(letter);
 
 export default initTask;
