@@ -11,6 +11,16 @@ const state = {
   incorrectGuesses: 0,
 };
 
+window.addEventListener('keydown', (e) => {
+  const key = e.key.toUpperCase();
+
+  const currentButton = document.getElementById(key);
+
+  if (currentButton) {
+    currentButton.click();
+  }
+});
+
 const resetState = () => {
   const keys = Object.keys(state);
   keys.forEach((key) => {
