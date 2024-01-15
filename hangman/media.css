@@ -1,0 +1,30 @@
+@media (max-width: 990px) {
+  .container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .hangman__image {
+    max-width: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .game {
+    gap: 10px;
+  }
+
+  .game__letter {
+    width: 25px;
+  }
+
+  .modal__content {
+    width: 70%;
+  }
+}
+
+@media (hover: hover) {
+  .game__keyboard_key:hover {
+    background: #7db1ff91;
+  }
+}
