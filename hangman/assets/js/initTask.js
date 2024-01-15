@@ -11,6 +11,7 @@ const state = {
   question: '',
   currentText: '',
   incorrectGuesses: 0,
+  questionId: 0,
 };
 
 window.addEventListener('keydown', (e) => {
@@ -151,38 +152,44 @@ modalAnswerWord.classList.add('modal__answer_word');
 modalButton.classList.add('modal__button', 'button');
 
 modalButton.textContent = textModalButton;
-modalButton.addEventListener('click', () => {
-  modal.classList.remove('show');
-});
+
+/* Append children to parents */
+
+hangmanArea.append(imageHangman, hangmanTitle);
+
+answer.append(gameLetterList);
+
+question.append(questionText);
+guesses.append(guessesTitle);
+gameArea.append(answer, question, guesses, keyboard);
+
+taskContainer.append(hangmanArea, gameArea);
+
+modalContent.append(modalStatus, modalAnswer, modalAnswerWord, modalButton);
+modal.append(modalContent);
 
 /* Updating HTML */
 
 const initTask = () => {
+  const previousQuestionId = state.questionId;
+  resetState();
+  gameLetterList.textContent = '';
+  const keyboardKeys = document.querySelectorAll('.game__keyboard_key');
+
+  keyboardKeys.forEach((key) => {
+    // eslint-disable-next-line no-param-reassign
+    key.disabled = false;
+  });
   /* Add attributes and values to element */
 
   hangmanTitle.textContent = taskGameName;
-  guessesCount.textContent = '0 / 6';
-  imageHangman.setAttribute('src', './assets/images/hangman-0.svg');
   guessesTitle.textContent = 'Incorrect guesses: ';
-
-  /* Append children to parents */
-
-  hangmanArea.append(imageHangman, hangmanTitle);
-
-  answer.append(gameLetterList);
-
-  question.append(questionText);
+  guessesCount.textContent = '0 / 6';
   guessesTitle.append(guessesCount);
-  guesses.append(guessesTitle);
-  gameArea.append(answer, question, guesses, keyboard);
-
-  taskContainer.append(hangmanArea, gameArea);
-
-  modalContent.append(modalStatus, modalAnswer, modalAnswerWord, modalButton);
-  modal.append(modalContent);
+  imageHangman.setAttribute('src', './assets/images/hangman-0.svg');
 
   /* Get question and render html */
-  const currentQuestionIndex = randomize(0, questionList.length - 1);
+  const currentQuestionIndex = randomize(0, questionList.length - 1, previousQuestionId);
   const currentQuestionBlock = questionList[currentQuestionIndex];
 
   state.question = currentQuestionBlock.question;
@@ -191,8 +198,6 @@ const initTask = () => {
   questionText.textContent = `Hint: ${state.question}`;
   console.log(state.answer);
 
-  resetState();
-
   state.answer.split('')
     .forEach(() => {
       const letter = document.createElement('li');
@@ -200,7 +205,12 @@ const initTask = () => {
       gameLetterList.append(letter);
     });
 
-  body.prepend(taskContainer, modal);
+  body.prepend(modal, taskContainer);
 };
+
+modalButton.addEventListener('click', () => {
+  modal.classList.remove('show');
+  initTask();
+});
 
 export default initTask;

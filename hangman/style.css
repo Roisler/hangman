@@ -3,7 +3,7 @@ body {
   margin: 0;
 }
 
-ul, li {
+li {
   list-style: none;
 }
 
@@ -18,7 +18,8 @@ ul, li {
 }
 
 .container {
-  width: 85%;
+  max-width: 1200px;
+  width: 80%;
   display: flex;
   flex-direction: row;
 
@@ -40,6 +41,8 @@ ul, li {
   gap: 20px;
   justify-content: center;
   align-items: center;
+
+  text-align: center;
 }
 
 .game__answer {
@@ -57,7 +60,7 @@ ul, li {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30px;
+  width: 28px;
   border-bottom: 3px solid black;
 
   transition: all 0.5s ease;
@@ -76,6 +79,8 @@ ul, li {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 5px;
+
+  width: 70%;
 
   justify-content: center;
 }
@@ -101,7 +106,6 @@ ul, li {
 }
 
 .modal {
-  display: flex;
   flex-direction: column;
 
   position: fixed;
@@ -111,14 +115,16 @@ ul, li {
   bottom: 0;
   width: 100%;
   height: 100%;
-  z-index: 1000;
 
   background: #3f3f3f7c;
 
   opacity: 0;
+
+  display: none;
 }
 
 .modal.show {
+  display: flex;
   opacity: 1;
 }
 
