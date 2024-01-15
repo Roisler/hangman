@@ -194,6 +194,7 @@ const initTask = () => {
 
   state.question = currentQuestionBlock.question;
   state.answer = currentQuestionBlock.answer;
+  state.questionId = currentQuestionIndex;
   state.currentText = state.currentText.padStart(state.answer.length, '*');
   questionText.textContent = `Hint: ${state.question}`;
   console.log(state.answer);
