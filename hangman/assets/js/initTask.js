@@ -1,8 +1,10 @@
 import randomize from './randomize.js';
 import questionList from '../questionList.js';
+import openModal from './openModal.js';
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const taskGameName = 'HANGMAN GAME';
+const textModalButton = 'Play Again';
 
 const state = {
   answer: '',
@@ -54,6 +56,62 @@ const guessesCount = document.createElement('span');
 
 const keyboard = document.createElement('div');
 
+const modal = document.createElement('div');
+const modalContent = document.createElement('div');
+const modalStatus = document.createElement('p');
+const modalAnswer = document.createElement('p');
+const modalAnswerWord = document.createElement('span');
+const modalButton = document.createElement('button');
+
+const updateHtml = (list, letter) => {
+  guessesCount.textContent = `${state.incorrectGuesses} / 6`;
+  imageHangman.setAttribute('src', `./assets/images/hangman-${state.incorrectGuesses}.svg`);
+
+  const currentButton = document.getElementById(letter);
+  currentButton.disabled = true;
+
+  if (state.incorrectGuesses >= 6) {
+    setTimeout(openModal(modal, 'lost', state.answer), 100);
+  }
+
+  const gameLetters = document.querySelectorAll('.game__letter');
+  const replaceArr = state.currentText.split('');
+
+  list.forEach((index) => {
+    gameLetters[index].textContent = letter;
+    gameLetters[index].classList.add('letter-open');
+
+    replaceArr[index] = letter.toLowerCase();
+  });
+
+  state.currentText = replaceArr.join('');
+  if (state.currentText === state.answer) {
+    setTimeout(openModal(modal, 'win', state.answer), 100);
+  }
+};
+
+const guessTheLetter = (el) => {
+  const currentLetter = el.target.textContent;
+
+  if (state.answer.indexOf(currentLetter.toLowerCase()) === -1) {
+    state.incorrectGuesses += 1;
+  }
+
+  const indexList = [];
+
+  const findIndex = (i) => {
+    const index = state.answer.indexOf(currentLetter.toLowerCase(), i);
+    if (index !== -1) {
+      indexList.push(index);
+      findIndex(index + 1);
+    }
+  };
+
+  findIndex(0);
+
+  updateHtml(indexList, currentLetter);
+};
+
 alphabet.split('')
   .forEach((el) => {
     const button = document.createElement('button');
@@ -85,63 +143,21 @@ guessesCount.classList.add('game__guesses_count');
 
 keyboard.classList.add('game__keyboard');
 
-const updateHtml = (list, letter) => {
-  guessesCount.textContent = `${state.incorrectGuesses} / 6`;
-  imageHangman.setAttribute('src', `./assets/images/hangman-${state.incorrectGuesses}.svg`);
+modal.classList.add('modal');
+modalContent.classList.add('modal__content');
+modalStatus.classList.add('modal__status');
+modalAnswer.classList.add('modal__answer');
+modalAnswerWord.classList.add('modal__answer_word');
+modalButton.classList.add('modal__button', 'button');
 
-  const currentButton = document.getElementById(letter);
-  currentButton.disabled = true;
+modalButton.textContent = textModalButton;
+modalButton.addEventListener('click', () => {
+  modal.classList.remove('show');
+});
 
-  if (state.incorrectGuesses >= 6) {
-    setTimeout(() => {
-      alert('You lose');
-    }, 100);
-  }
-
-  const gameLetters = document.querySelectorAll('.game__letter');
-  const replaceArr = state.currentText.split('');
-
-  list.forEach((index) => {
-    gameLetters[index].textContent = letter;
-    gameLetters[index].classList.add('letter-open');
-
-    replaceArr[index] = letter.toLowerCase();
-  });
-
-  state.currentText = replaceArr.join('');
-  if (state.currentText === state.answer) {
-    setTimeout(() => {
-      alert('You win');
-    }, 100);
-  }
-};
-
-const guessTheLetter = (el) => {
-  const currentLetter = el.target.textContent;
-
-  if (state.answer.indexOf(currentLetter.toLowerCase()) === -1) {
-    state.incorrectGuesses += 1;
-  }
-
-  const indexList = [];
-
-  const findIndex = (i) => {
-    const index = state.answer.indexOf(currentLetter.toLowerCase(), i);
-    if (index !== -1) {
-      indexList.push(index);
-      findIndex(index + 1);
-    }
-  };
-
-  findIndex(0);
-
-  console.log(indexList);
-  console.log(state);
-  updateHtml(indexList, currentLetter);
-};
+/* Updating HTML */
 
 const initTask = () => {
-  resetState();
   /* Add attributes and values to element */
 
   hangmanTitle.textContent = taskGameName;
@@ -162,14 +178,20 @@ const initTask = () => {
 
   taskContainer.append(hangmanArea, gameArea);
 
+  modalContent.append(modalStatus, modalAnswer, modalAnswerWord, modalButton);
+  modal.append(modalContent);
+
   /* Get question and render html */
   const currentQuestionIndex = randomize(0, questionList.length - 1);
   const currentQuestionBlock = questionList[currentQuestionIndex];
+
   state.question = currentQuestionBlock.question;
   state.answer = currentQuestionBlock.answer;
   state.currentText = state.currentText.padStart(state.answer.length, '*');
   questionText.textContent = `Hint: ${state.question}`;
   console.log(state.answer);
+
+  resetState();
 
   state.answer.split('')
     .forEach(() => {
@@ -178,7 +200,7 @@ const initTask = () => {
       gameLetterList.append(letter);
     });
 
-  body.append(taskContainer);
+  body.prepend(taskContainer, modal);
 };
 
 export default initTask;
