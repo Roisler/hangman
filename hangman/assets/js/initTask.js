@@ -14,15 +14,15 @@ const state = {
   questionId: 0,
 };
 
-window.addEventListener('keydown', (e) => {
-  const key = e.key.toUpperCase();
+export const pressKey = (element) => {
+  const key = element.key.toUpperCase();
 
   const currentButton = document.getElementById(key);
 
   if (currentButton) {
     currentButton.click();
   }
-});
+};
 
 const resetState = () => {
   const keys = Object.keys(state);
@@ -72,7 +72,8 @@ const updateHtml = (list, letter) => {
   currentButton.disabled = true;
 
   if (state.incorrectGuesses >= 6) {
-    setTimeout(openModal(modal, 'lost', state.answer), 100);
+    setTimeout(() => openModal(modal, 'lost', state.answer), 200);
+    document.removeEventListener('keydown', pressKey);
   }
 
   const gameLetters = document.querySelectorAll('.game__letter');
@@ -87,7 +88,8 @@ const updateHtml = (list, letter) => {
 
   state.currentText = replaceArr.join('');
   if (state.currentText === state.answer) {
-    setTimeout(openModal(modal, 'win', state.answer), 100);
+    setTimeout(() => openModal(modal, 'win', state.answer), 200);
+    document.removeEventListener('keydown', pressKey);
   }
 };
 
@@ -171,6 +173,8 @@ modal.append(modalContent);
 /* Updating HTML */
 
 const initTask = () => {
+  document.addEventListener('keydown', pressKey);
+
   const previousQuestionId = state.questionId;
   resetState();
   gameLetterList.textContent = '';
