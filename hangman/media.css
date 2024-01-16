@@ -5,17 +5,22 @@
   }
 
   .hangman__image {
-    max-width: 220px;
+    max-width: 200px;
   }
 }
 
 @media (max-width: 768px) {
   .game {
-    gap: 10px;
+    gap: 0px;
+    justify-content: space-around;
   }
 
   .game__letter {
     width: 25px;
+  }
+
+  .game__keyboard {
+    width: 100%;
   }
 
   .modal__content {
@@ -24,7 +29,7 @@
 }
 
 @media (hover: hover) {
-  .game__keyboard_key:hover {
+  .game__keyboard_key:not([disabled]):hover {
     background: #7db1ff91;
   }
 }
